@@ -21,14 +21,17 @@
         }
 
         @media print {
-            body { background: white !important; padding: 0 !important; }
+            @page {
+                margin: 0; /* Removes default browser headers/footers */
+            }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .no-print { display: none !important; }
             .pdf-page {
                 box-shadow: none !important;
                 margin: 0 !important;
                 width: 100% !important;
-                padding: 20mm !important;
-                page-break-after: always;
+                padding: 15mm !important;
+                page-break-after: auto;
             }
         }
 
@@ -93,19 +96,16 @@
             min-height: 297mm;
             background: white;
             margin: 20px auto;
-            padding: 12mm 14mm;
+            padding: 20mm;
             box-shadow: 0 0 30px rgba(0,0,0,0.15);
             position: relative;
             box-sizing: border-box;
         }
 
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .report-header-line {
             border-bottom: 4px solid var(--primary);
             padding-bottom: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 25px;
         }
 
         .chip {
@@ -123,29 +123,31 @@
         .content-box {
             background: #f8fafc;
             border-radius: 10px;
-            padding: 14px 18px;
-            margin-bottom: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
             border: 1px solid var(--border);
         }
 
         .content-box h3 {
             margin-top: 0;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: var(--primary);
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .impact-statement {
             background: linear-gradient(to right, #4a2060, #6b3a8a);
             color: white;
-            padding: 14px 18px;
+            padding: 20px;
             border-radius: 10px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
         }
 
         .impact-statement::after {
@@ -155,7 +157,7 @@
             position: absolute;
             right: 20px;
             bottom: 10px;
-            font-size: 4rem;
+            font-size: 3rem;
             opacity: 0.1;
         }
     </style>
@@ -165,9 +167,6 @@
 
     <script type="text/babel">
         const { useState } = React;
-
-        // FIX: stable random ID generated once, not on every render
-        const LOG_ID = 'AUD-' + (Math.floor(Math.random() * 90000) + 10000);
 
         function App() {
             const [mode, setMode] = useState('edit');
@@ -181,8 +180,7 @@
                 link: '',
                 summary: '',
                 outcomes: '',
-                clinicalImpact: '',
-                peerFeedback: ''
+                clinicalImpact: ''
             });
 
             const update = (field, val) => setData(prev => ({...prev, [field]: val}));
@@ -197,14 +195,14 @@
                 return (
                     <div className="dashboard no-print">
                         <div style={{textAlign: 'center', marginBottom: '40px'}}>
-                            <h1 style={{color: 'var(--primary)', margin: 0, fontSize: '2.2rem'}}>CPD Log</h1>
-                            <p style={{color: '#64748b', marginTop: '8px'}}>Professional Development Record for Audiology Specialists</p>
+                            <h1 style={{color: 'var(--primary)', margin: 0, fontSize: '2.2rem'}}>CPD Entry</h1>
+                            <p style={{color: '#64748b', marginTop: '8px'}}>Complete the details below for your professional log.</p>
                         </div>
 
                         <div className="form-grid">
                             <div className="input-group">
                                 <label><i className="fa-solid fa-user"></i> Practitioner Name</label>
-                                <input type="text" value={data.name} onChange={e => update('name', e.target.value)} placeholder="Jane Doe" />
+                                <input type="text" value={data.name} onChange={e => update('name', e.target.value)} />
                             </div>
                             <div className="input-group">
                                 <label><i className="fa-solid fa-briefcase"></i> Job Title</label>
@@ -216,27 +214,26 @@
                             </div>
                             <div className="input-group">
                                 <label><i className="fa-solid fa-clock"></i> Duration (Hours)</label>
-                                <input type="number" value={data.hours} onChange={e => update('hours', e.target.value)} placeholder="e.g. 2.5" />
+                                <input type="number" value={data.hours} onChange={e => update('hours', e.target.value)} />
                             </div>
-                            {/* FIX: gridColumn span must be in style object as a string */}
                             <div className="input-group" style={{gridColumn: 'span 2'}}>
                                 <label><i className="fa-solid fa-graduation-cap"></i> Activity Title</label>
-                                <input type="text" value={data.activity} onChange={e => update('activity', e.target.value)} placeholder="e.g. BSA Tinnitus Management Masterclass" />
+                                <input type="text" value={data.activity} onChange={e => update('activity', e.target.value)} />
                             </div>
-                            <div className="input-group">
+                            <div className="input-group" style={{gridColumn: 'span 2'}}>
                                 <label><i className="fa-solid fa-tags"></i> Core Domain</label>
                                 <select value={data.category} onChange={e => update('category', e.target.value)}>
-                                    <option>Hearing Assessment &amp; Diagnostics</option>
-                                    <option>Hearing Aid Fitting &amp; Verification</option>
-                                    <option>Tinnitus &amp; Balance Management</option>
-                                    <option>Patient Communication &amp; Counselling</option>
-                                    <option>Hearing Technology &amp; Innovation</option>
-                                    <option>Safeguarding &amp; Compliance</option>
-                                    <option>Leadership &amp; Management</option>
+                                    <option>Hearing Assessment & Diagnostics</option>
+                                    <option>Hearing Aid Fitting & Verification</option>
+                                    <option>Tinnitus & Balance Management</option>
+                                    <option>Patient Communication & Counselling</option>
+                                    <option>Hearing Technology & Innovation</option>
+                                    <option>Safeguarding & Compliance</option>
+                                    <option>Leadership & Management</option>
                                     <option>Other</option>
                                 </select>
                             </div>
-                            <div className="input-group">
+                            <div className="input-group" style={{gridColumn: 'span 2'}}>
                                 <label><i className="fa-solid fa-link"></i> Portfolio Evidence Link</label>
                                 <input type="text" value={data.link} onChange={e => update('link', e.target.value)} placeholder="https://..." />
                             </div>
@@ -244,22 +241,22 @@
 
                         <div className="input-group" style={{marginTop: '25px'}}>
                             <label>Learning Summary</label>
-                            <textarea rows="4" value={data.summary} onChange={e => update('summary', e.target.value)} placeholder="What was covered?"></textarea>
+                            <textarea rows="4" value={data.summary} onChange={e => update('summary', e.target.value)}></textarea>
                         </div>
 
                         <div className="input-group" style={{marginTop: '25px'}}>
                             <label>Specific Learning Outcomes</label>
-                            <textarea rows="4" value={data.outcomes} onChange={e => update('outcomes', e.target.value)} placeholder="What did you personally take away?"></textarea>
+                            <textarea rows="4" value={data.outcomes} onChange={e => update('outcomes', e.target.value)}></textarea>
                         </div>
 
                         <div className="input-group" style={{marginTop: '25px'}}>
                             <label>Impact on Clinical Care</label>
-                            <textarea rows="4" value={data.clinicalImpact} onChange={e => update('clinicalImpact', e.target.value)} placeholder="How will your patients benefit?"></textarea>
+                            <textarea rows="4" value={data.clinicalImpact} onChange={e => update('clinicalImpact', e.target.value)}></textarea>
                         </div>
 
                         <div style={{marginTop: '40px', display: 'flex', justifyContent: 'center'}}>
                             <button className="btn-modern" onClick={() => setMode('preview')}>
-                                <i className="fa-solid fa-file-export"></i> Generate Professional Portfolio Page
+                                <i className="fa-solid fa-file-export"></i> View PDF Layout
                             </button>
                         </div>
                     </div>
@@ -267,44 +264,38 @@
             }
 
             return (
-                <div style={{padding: '40px 0', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', minHeight: '100vh'}}>
+                <div style={{padding: '40px 0', background: '#f5f7fa', minHeight: '100vh'}}>
                     <div className="no-print" style={{display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px'}}>
                         <button className="btn-modern" onClick={() => window.print()}>
                             <i className="fa-solid fa-print"></i> Print to PDF
                         </button>
                         <button className="btn-modern" style={{background: 'white', color: 'var(--primary)', border: '2px solid var(--primary)'}} onClick={() => setMode('edit')}>
-                            <i className="fa-solid fa-pen-to-square"></i> Edit Data
+                            <i className="fa-solid fa-pen-to-square"></i> Edit Details
                         </button>
                     </div>
 
                     <div className="pdf-page">
-                        <div className="report-header">
-                            <div>
-                                <h1 style={{margin: 0, color: 'var(--primary)', fontSize: '1.8rem'}}>CPD Evidence Log</h1>
-                                <p style={{margin: 0, color: '#64748b', fontWeight: 600, fontSize: '0.9rem'}}>Professional Audiology Portfolio</p>
-                            </div>
-                            <div style={{textAlign: 'right'}}>
-                                <div className="chip"><i className="fa-solid fa-check-double"></i> Verified Record</div>
-                                <p style={{margin: '8px 0 0 0', fontSize: '0.9rem', color: '#64748b'}}>{formatDate(data.date)}</p>
-                            </div>
+                        <div className="report-header-line">
+                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
+                                <div>
+                                    <h1 style={{margin: 0, color: 'var(--primary)', fontSize: '2rem'}}>CPD Evidence Log</h1>
+                                    <div style={{marginTop: '5px', fontSize: '1.2rem', fontWeight: 700}}>{data.name || 'Practitioner Name'}</div>
+                                    <div style={{color: 'var(--primary)', fontWeight: 600}}>{data.jobTitle}</div>
+                                </div>
+                                <div style={{textAlign: 'right'}}>
+                                    <div style={{fontSize: '1rem', fontWeight: 700, color: '#64748b'}}>{formatDate(data.date)}</div>
+                                    <div style={{fontSize: '1.2rem', fontWeight: 700, marginTop: '5px'}}>{data.hours ? data.hours + ' Hours' : ''}</div>
+                                </div>
+                             </div>
                         </div>
 
-                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px'}}>
-                            <div>
-                                <div style={{fontSize: '0.8rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px'}}>Practitioner</div>
-                                <div style={{fontSize: '1.4rem', fontWeight: 700}}>{data.name || '—'}</div>
-                                <div style={{color: 'var(--primary)', fontWeight: 600}}>{data.jobTitle}</div>
-                            </div>
-                            <div style={{textAlign: 'right'}}>
-                                <div style={{fontSize: '0.8rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px'}}>Activity Profile</div>
-                                <div style={{fontSize: '1.2rem', fontWeight: 700}}>{data.hours ? data.hours + ' Hours' : '—'}</div>
-                                <div className="chip" style={{marginTop: '5px'}}>{data.category}</div>
-                            </div>
+                        <div style={{marginBottom: '20px'}}>
+                            <div className="chip"><i className="fa-solid fa-tags"></i> Domain: {data.category}</div>
                         </div>
 
                         <div className="content-box" style={{borderLeft: '6px solid var(--primary)'}}>
                             <h3><i className="fa-solid fa-book-open"></i> Activity Overview</h3>
-                            <div style={{fontSize: '1.1rem', fontWeight: 700, marginBottom: '10px'}}>{data.activity || '—'}</div>
+                            <div style={{fontSize: '1.1rem', fontWeight: 700, marginBottom: '10px', color: '#1a1a2e'}}>{data.activity || 'Untitled Activity'}</div>
                             <p style={{lineHeight: 1.6, margin: 0, whiteSpace: 'pre-wrap'}}>{data.summary}</p>
                         </div>
 
@@ -314,29 +305,17 @@
                         </div>
 
                         <div className="impact-statement">
-                            <h3 style={{color: 'white', marginTop: 0, marginBottom: '8px', fontSize: '1rem'}}><i className="fa-solid fa-heart-pulse"></i> Patient &amp; Clinical Impact</h3>
-                            <p style={{fontSize: '0.95rem', lineHeight: 1.5, margin: 0, whiteSpace: 'pre-wrap'}}>{data.clinicalImpact}</p>
+                            <h3 style={{color: 'white', marginTop: 0, marginBottom: '10px'}}><i className="fa-solid fa-heart-pulse"></i> Clinical Impact</h3>
+                            <p style={{fontSize: '1rem', lineHeight: 1.5, margin: 0, whiteSpace: 'pre-wrap'}}>{data.clinicalImpact}</p>
                         </div>
 
                         {data.link && (
-                            <div style={{marginBottom: '25px', padding: '15px', border: '1px dashed var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px'}}>
+                            <div style={{padding: '15px', border: '1px dashed var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <i className="fa-solid fa-paperclip" style={{color: 'var(--primary)'}}></i>
-                                <span style={{fontWeight: 600}}>Supporting Evidence:</span>
+                                <span style={{fontWeight: 600}}>Evidence Link:</span>
                                 <a href={data.link} style={{color: '#2563eb', wordBreak: 'break-all'}}>{data.link}</a>
                             </div>
                         )}
-
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '16px', borderTop: '1px solid var(--border)'}}>
-                            {/* FIX: var() inside JSX string literals doesn't work — use hex colour directly */}
-                            <div style={{fontSize: '0.8rem', color: '#64748b'}}>
-                                Log ID: {LOG_ID}<br/>
-                                Electronically Generated CPD Record
-                            </div>
-                            <div style={{textAlign: 'center', width: '200px'}}>
-                                <div style={{height: '1px', background: '#333', marginBottom: '5px'}}></div>
-                                <div style={{fontSize: '0.8rem', fontWeight: 700}}>Signature</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             );
