@@ -93,7 +93,7 @@
             min-height: 297mm;
             background: white;
             margin: 20px auto;
-            padding: 20mm 25mm;
+            padding: 12mm 14mm;
             box-shadow: 0 0 30px rgba(0,0,0,0.15);
             position: relative;
             box-sizing: border-box;
@@ -104,8 +104,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 4px solid var(--primary);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .chip {
@@ -122,29 +122,30 @@
 
         .content-box {
             background: #f8fafc;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
             border: 1px solid var(--border);
         }
 
         .content-box h3 {
             margin-top: 0;
+            margin-bottom: 8px;
             color: var(--primary);
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .impact-statement {
             background: linear-gradient(to right, #4a2060, #6b3a8a);
             color: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 14px 18px;
+            border-radius: 10px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 25px;
+            margin-bottom: 14px;
         }
 
         .impact-statement::after {
@@ -172,10 +173,10 @@
             const [mode, setMode] = useState('edit');
             const [data, setData] = useState({
                 name: '',
-                jobTitle: 'Senior Audiologist',
+                jobTitle: 'Hearing Aid Audiologist',
                 date: '',
                 activity: '',
-                category: 'Clinical Excellence',
+                category: 'Hearing Assessment & Diagnostics',
                 hours: '',
                 link: '',
                 summary: '',
@@ -196,8 +197,7 @@
                 return (
                     <div className="dashboard no-print">
                         <div style={{textAlign: 'center', marginBottom: '40px'}}>
-                            <h1 style={{color: 'var(--primary)', margin: 0, fontSize: '2.2rem'}}>CPD Pulse</h1>
-                            {/* FIX: var() in JSX strings must use style object, not template literals */}
+                            <h1 style={{color: 'var(--primary)', margin: 0, fontSize: '2.2rem'}}>CPD Log</h1>
                             <p style={{color: '#64748b', marginTop: '8px'}}>Professional Development Record for Audiology Specialists</p>
                         </div>
 
@@ -226,11 +226,14 @@
                             <div className="input-group">
                                 <label><i className="fa-solid fa-tags"></i> Core Domain</label>
                                 <select value={data.category} onChange={e => update('category', e.target.value)}>
-                                    <option>Clinical Excellence</option>
-                                    <option>Advanced Technology</option>
-                                    <option>Patient Communication</option>
+                                    <option>Hearing Assessment &amp; Diagnostics</option>
+                                    <option>Hearing Aid Fitting &amp; Verification</option>
+                                    <option>Tinnitus &amp; Balance Management</option>
+                                    <option>Patient Communication &amp; Counselling</option>
+                                    <option>Hearing Technology &amp; Innovation</option>
+                                    <option>Safeguarding &amp; Compliance</option>
                                     <option>Leadership &amp; Management</option>
-                                    <option>Research &amp; Audit</option>
+                                    <option>Other</option>
                                 </select>
                             </div>
                             <div className="input-group">
@@ -277,8 +280,8 @@
                     <div className="pdf-page">
                         <div className="report-header">
                             <div>
-                                <h1 style={{margin: 0, color: 'var(--primary)', fontSize: '2.4rem'}}>CPD Evidence Log</h1>
-                                <p style={{margin: 0, color: '#64748b', fontWeight: 600}}>Professional Audiology Portfolio</p>
+                                <h1 style={{margin: 0, color: 'var(--primary)', fontSize: '1.8rem'}}>CPD Evidence Log</h1>
+                                <p style={{margin: 0, color: '#64748b', fontWeight: 600, fontSize: '0.9rem'}}>Professional Audiology Portfolio</p>
                             </div>
                             <div style={{textAlign: 'right'}}>
                                 <div className="chip"><i className="fa-solid fa-check-double"></i> Verified Record</div>
@@ -286,7 +289,7 @@
                             </div>
                         </div>
 
-                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px'}}>
+                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px'}}>
                             <div>
                                 <div style={{fontSize: '0.8rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px'}}>Practitioner</div>
                                 <div style={{fontSize: '1.4rem', fontWeight: 700}}>{data.name || '—'}</div>
@@ -311,8 +314,8 @@
                         </div>
 
                         <div className="impact-statement">
-                            <h3 style={{color: 'white', marginTop: 0}}><i className="fa-solid fa-heart-pulse"></i> Patient &amp; Clinical Impact</h3>
-                            <p style={{fontSize: '1.1rem', lineHeight: 1.6, margin: 0, whiteSpace: 'pre-wrap'}}>{data.clinicalImpact}</p>
+                            <h3 style={{color: 'white', marginTop: 0, marginBottom: '8px', fontSize: '1rem'}}><i className="fa-solid fa-heart-pulse"></i> Patient &amp; Clinical Impact</h3>
+                            <p style={{fontSize: '0.95rem', lineHeight: 1.5, margin: 0, whiteSpace: 'pre-wrap'}}>{data.clinicalImpact}</p>
                         </div>
 
                         {data.link && (
@@ -323,7 +326,7 @@
                             </div>
                         )}
 
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '30px', borderTop: '1px solid var(--border)'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '16px', borderTop: '1px solid var(--border)'}}>
                             {/* FIX: var() inside JSX string literals doesn't work — use hex colour directly */}
                             <div style={{fontSize: '0.8rem', color: '#64748b'}}>
                                 Log ID: {LOG_ID}<br/>
