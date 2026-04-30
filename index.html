@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audiology CPD Log</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --brand-purple: #4a2060;
+            --brand-gold: #c9a84c;
+            --bg-gray: #f4f7f6;
+            --border: #e2e8f0;
+        }
+
+        @media print {
+            @page { size: A4; margin: 0; }
+            body { background: white !important; margin: 0; padding: 0; }
+            .no-print { display: none !important; }
+            .pdf-container {
+                width: 210mm;
+                height: 297mm;
+                padding: 15mm !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+            }
+        }
+
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-gray); margin: 0; padding: 20px; color: #333; }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .pdf-container {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: auto;
+            padding: 20mm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header { border-bottom: 3px solid var(--brand-purple); padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: var(--brand-purple); margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        
+        .input-group { display: flex; flexDirection: column; gap: 8px; }
+        label { font-weight: 600; font-size: 13px; color: var(--brand-purple); text-transform: uppercase; }
+        input, select, textarea { 
+            padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; transition: border 0.2s;
+        }
+        input:focus, textarea:focus { border-color: var(--brand-purple); }
+
+        .btn { 
+            background: var(--brand-purple); color: white; border: none; padding: 12px 24px; border-radius: 8px; 
+            font-weight: 700; cursor: pointer; transition: opacity 0.2s; font-size: 15px;
+        }
+        .btn:hover { opacity: 0.9; }
+
+        .cpd-section { margin-bottom: 25px; padding: 20px; background: #fcfaff; border-left: 5px solid var(--brand-gold); border-radius: 4px; }
+        .cpd-section h3 { margin-top: 0; color: var(--brand-purple); font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        
+        .reflection-box { line-height: 1.6; font-size: 15px; color: #444; }
+        .link-display { color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all; }
+        
+        .footer-note { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: #888; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function App() {
+            const [isView, setIsView] = useState(false);
+            const [form, setForm] = useState({
+                name: '',
+                date: '',
+                activity: '',
+                category: 'Clinical Skills',
+                hours: '',
+                evidenceLink: '',
+                description: '',
+                outcomes: '',
+                clinicalImpact: ''
+            });
+
+            const categories = [
+                'Clinical Skills', 
+                'Technological Advances', 
+                'Research & Evidence', 
+                'Communication & Ethics', 
+                'Professional Leadership'
+            ];
+
+            const handleChange = (e) => {
+                setForm({...form, [e.target.name]: e.target.value});
+            };
+
+            if (!isView) {
+                return (
+                    <div className="form-container no-print">
+                        <h2 style={{color: 'var(--brand-purple)', marginBottom: '25px'}}>Log New Audiology CPD Entry</h2>
+                        <div className="grid">
+                            <div className="input-group">
+                                <label>Full Name</label>
+                                <input name="name" value={form.name} onChange={handleChange} placeholder="Enter your name" />
+                            </div>
+                            <div className="input-group">
+                                <label>Date of Activity</label>
+                                <input name="date" type="date" value={form.date} onChange={handleChange} />
+                            </div>
+                            <div className="input-group" style={{gridColumn: 'span 2'}}>
+                                <label>Activity Title</label>
+                                <input name="activity" value={form.activity} onChange={handleChange} placeholder="e.g. Advanced Tinnitus Management Seminar" />
+                            </div>
+                            <div className="input-group">
+                                <label>CPD Category</label>
+                                <select name="category" value={form.category} onChange={handleChange}>
+                                    {categories.map(c => <option key={c}>{c}</option>)}
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                <label>Duration (Hours)</label>
+                                <input name="hours" type="number" value={form.hours} onChange={handleChange} placeholder="e.g. 2.5" />
+                            </div>
+                            <div className="input-group" style={{gridColumn: 'span 2'}}>
+                                <label>Evidence Hyperlink (Certificate/Article)</label>
+                                <input name="evidenceLink" value={form.evidenceLink} onChange={handleChange} placeholder="https://..." />
+                            </div>
+                        </div>
+
+                        <div className="input-group" style={{marginBottom: '20px'}}>
+                            <label>Description of Activity</label>
+                            <textarea name="description" rows="3" value={form.description} onChange={handleChange}></textarea>
+                        </div>
+
+                        <div className="input-group" style={{marginBottom: '20px'}}>
+                            <label>Learning Outcomes (What did you learn?)</label>
+                            <textarea name="outcomes" rows="3" value={form.outcomes} onChange={handleChange}></textarea>
+                        </div>
+
+                        <div className="input-group" style={{marginBottom: '30px'}}>
+                            <label>Impact on Clinical Practice (How will this help your patients?)</label>
+                            <textarea name="clinicalImpact" rows="3" value={form.clinicalImpact} onChange={handleChange}></textarea>
+                        </div>
+
+                        <button className="btn" onClick={() => setIsView(true)}>Preview & Generate PDF</button>
+                    </div>
+                );
+            }
+
+            return (
+                <div style={{background: '#444', padding: '40px 0'}}>
+                    <div className="no-print" style={{textAlign: 'center', marginBottom: '30px'}}>
+                        <button className="btn" onClick={() => window.print()}>Print / Save as PDF</button>
+                        <button className="btn" style={{background: 'white', color: 'var(--brand-purple)', marginLeft: '15px'}} onClick={() => setIsView(false)}>Edit Entry</button>
+                    </div>
+
+                    <div className="pdf-container">
+                        <div className="header">
+                            <h1>CPD Record: Professional Audiology</h1>
+                        </div>
+
+                        <div className="grid" style={{marginBottom: '40px'}}>
+                            <div>
+                                <label>Practitioner</label>
+                                <div style={{fontSize: '18px', fontWeight: 'bold'}}>{form.name || 'Not specified'}</div>
+                            </div>
+                            <div style={{textAlign: 'right'}}>
+                                <label>Date</label>
+                                <div style={{fontSize: '18px', fontWeight: 'bold'}}>{form.date || 'Not specified'}</div>
+                            </div>
+                        </div>
+
+                        <div className="cpd-section">
+                            <h3>Activity Details</h3>
+                            <div className="reflection-box">
+                                <strong>Title:</strong> {form.activity || 'No Title Provided'} <br/>
+                                <strong>Category:</strong> {form.category} <br/>
+                                <strong>Time Logged:</strong> {form.hours} Hours
+                            </div>
+                            {form.evidenceLink && (
+                                <div style={{marginTop: '10px'}}>
+                                    <strong>Evidence Link:</strong> <span className="link-display">{form.evidenceLink}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="cpd-section">
+                            <h3>Reflection & Learning</h3>
+                            <div className="reflection-box">
+                                <p><strong>Summary:</strong><br/> {form.description || 'N/A'}</p>
+                                <p><strong>Outcomes:</strong><br/> {form.outcomes || 'N/A'}</p>
+                            </div>
+                        </div>
+
+                        <div className="cpd-section" style={{background: '#fffbe6', borderLeftColor: '#f1c40f'}}>
+                            <h3>Clinical Impact</h3>
+                            <div className="reflection-box" style={{fontStyle: 'italic'}}>
+                                "{form.clinicalImpact || 'No impact recorded.'}"
+                            </div>
+                        </div>
+
+                        <div className="footer-note">
+                            This document serves as a formal record of Continuing Professional Development. 
+                            The practitioner confirms the information provided is a true reflection of the activity undertaken.
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
