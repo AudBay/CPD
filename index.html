@@ -1,328 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audiology CPD - Professional Learning Log</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #4a2060;
-            --primary-light: #f3edf8;
-            --accent: #c9a84c;
-            --success: #2e7d32;
-            --text-main: #1a1a2e;
-            --text-muted: #64748b;
-            --bg-glass: rgba(255, 255, 255, 0.9);
-            --border: #e2e8f0;
-        }
-
-        @media print {
-            @page {
-                margin: 0; /* Removes default browser headers/footers */
-            }
-            body { background: white !important; padding: 0 !important; margin: 0 !important; }
-            .no-print { display: none !important; }
-            .pdf-page {
-                box-shadow: none !important;
-                margin: 0 !important;
-                width: 100% !important;
-                padding: 15mm !important;
-                page-break-after: auto;
-            }
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            margin: 0;
-            min-height: 100vh;
-            color: var(--text-main);
-        }
-
-        .dashboard {
-            max-width: 1000px;
-            margin: 40px auto;
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
-        label { font-weight: 700; font-size: 0.85rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
-
-        input, select, textarea {
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        input:focus, textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
-
-        .btn-modern {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: transform 0.2s, background 0.3s;
-        }
-
-        .btn-modern:hover { transform: translateY(-2px); background: #351746; }
-
-        .pdf-page {
-            width: 210mm;
-            min-height: 297mm;
-            background: white;
-            margin: 20px auto;
-            padding: 20mm;
-            box-shadow: 0 0 30px rgba(0,0,0,0.15);
-            position: relative;
-            box-sizing: border-box;
-        }
-
-        .report-header-line {
-            border-bottom: 4px solid var(--primary);
-            padding-bottom: 12px;
-            margin-bottom: 25px;
-        }
-
-        .chip {
-            padding: 6px 14px;
-            background: var(--primary-light);
-            color: var(--primary);
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .content-box {
-            background: #f8fafc;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .content-box h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .impact-statement {
-            background: linear-gradient(to right, #4a2060, #6b3a8a);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .impact-statement::after {
-            content: "\f10d";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            position: absolute;
-            right: 20px;
-            bottom: 10px;
-            font-size: 3rem;
-            opacity: 0.1;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audiology CPD Records</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState } = React;
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/>
+            <path d="M14 7c-2.8 0-5 2.2-5 5 0 2.1 1.3 3.9 3.2 4.7L12 21h4l-.2-4.3C17.7 15.9 19 14.1 19 12c0-2.8-2.2-5-5-5z" fill="currentColor" opacity="0.8"/>
+            <circle cx="14" cy="12" r="2" fill="white"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">AudioCPD</span>
+          <span class="logo-sub">Professional Development Records</span>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <button class="nav-btn active" data-view="dashboard" onclick="showView('dashboard')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-btn" data-view="form" onclick="showView('form')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Entry
+        </button>
+        <button class="nav-btn" data-view="records" onclick="showView('records')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Records
+        </button>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
 
-        function App() {
-            const [mode, setMode] = useState('edit');
-            const [data, setData] = useState({
-                name: '',
-                jobTitle: 'Hearing Aid Audiologist',
-                date: '',
-                activity: '',
-                category: 'Hearing Assessment & Diagnostics',
-                hours: '',
-                link: '',
-                summary: '',
-                outcomes: '',
-                clinicalImpact: ''
-            });
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast"></div>
 
-            const update = (field, val) => setData(prev => ({...prev, [field]: val}));
+  <!-- ===== MAIN ===== -->
+  <main class="main-content">
 
-            const formatDate = (d) => {
-                if (!d) return '';
-                const dt = new Date(d + 'T12:00:00');
-                return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-            };
+    <!-- DASHBOARD VIEW -->
+    <section class="view" id="view-dashboard">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Your CPD Dashboard</h1>
+          <p class="view-subtitle">Track, reflect, and grow your professional development</p>
+        </div>
+      </div>
 
-            if (mode === 'edit') {
-                return (
-                    <div className="dashboard no-print">
-                        <div style={{textAlign: 'center', marginBottom: '40px'}}>
-                            <h1 style={{color: 'var(--primary)', margin: 0, fontSize: '2.2rem'}}>CPD Entry</h1>
-                            <p style={{color: '#64748b', marginTop: '8px'}}>Complete the details below for your professional log.</p>
-                        </div>
+      <!-- Stats Row -->
+      <div class="stats-grid" id="stats-grid"></div>
 
-                        <div className="form-grid">
-                            <div className="input-group">
-                                <label><i className="fa-solid fa-user"></i> Practitioner Name</label>
-                                <input type="text" value={data.name} onChange={e => update('name', e.target.value)} />
-                            </div>
-                            <div className="input-group">
-                                <label><i className="fa-solid fa-briefcase"></i> Job Title</label>
-                                <input type="text" value={data.jobTitle} onChange={e => update('jobTitle', e.target.value)} />
-                            </div>
-                            <div className="input-group">
-                                <label><i className="fa-solid fa-calendar"></i> Activity Date</label>
-                                <input type="date" value={data.date} onChange={e => update('date', e.target.value)} />
-                            </div>
-                            <div className="input-group">
-                                <label><i className="fa-solid fa-clock"></i> Duration (Hours)</label>
-                                <input type="number" value={data.hours} onChange={e => update('hours', e.target.value)} />
-                            </div>
-                            <div className="input-group" style={{gridColumn: 'span 2'}}>
-                                <label><i className="fa-solid fa-graduation-cap"></i> Activity Title</label>
-                                <input type="text" value={data.activity} onChange={e => update('activity', e.target.value)} />
-                            </div>
-                            <div className="input-group" style={{gridColumn: 'span 2'}}>
-                                <label><i className="fa-solid fa-tags"></i> Core Domain</label>
-                                <select value={data.category} onChange={e => update('category', e.target.value)}>
-                                    <option>Hearing Assessment & Diagnostics</option>
-                                    <option>Hearing Aid Fitting & Verification</option>
-                                    <option>Tinnitus & Balance Management</option>
-                                    <option>Patient Communication & Counselling</option>
-                                    <option>Hearing Technology & Innovation</option>
-                                    <option>Safeguarding & Compliance</option>
-                                    <option>Leadership & Management</option>
-                                    <option>Other</option>
-                                </select>
-                            </div>
-                            <div className="input-group" style={{gridColumn: 'span 2'}}>
-                                <label><i className="fa-solid fa-link"></i> Portfolio Evidence Link</label>
-                                <input type="text" value={data.link} onChange={e => update('link', e.target.value)} placeholder="https://..." />
-                            </div>
-                        </div>
+      <!-- Recent + Quick Actions -->
+      <div class="dashboard-grid">
+        <div class="dash-col">
+          <div class="section-label">Recent Entries</div>
+          <div id="recent-entries-list" class="recent-list"></div>
+        </div>
+        <div class="dash-col">
+          <div class="section-label">Quick Actions</div>
+          <div class="quick-actions">
+            <button class="qa-btn primary" onclick="showView('form')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <div>
+                <div class="qa-label">New CPD Entry</div>
+                <div class="qa-desc">Log a new activity</div>
+              </div>
+            </button>
+            <button class="qa-btn" onclick="showView('records')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <div>
+                <div class="qa-label">View All Records</div>
+                <div class="qa-desc">Browse saved entries</div>
+              </div>
+            </button>
+            <button class="qa-btn" onclick="exportAllPDF()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <div>
+                <div class="qa-label">Export All as PDF</div>
+                <div class="qa-desc">Full CPD portfolio</div>
+              </div>
+            </button>
+          </div>
 
-                        <div className="input-group" style={{marginTop: '25px'}}>
-                            <label>Learning Summary</label>
-                            <textarea rows="4" value={data.summary} onChange={e => update('summary', e.target.value)}></textarea>
-                        </div>
+          <!-- CPD Type Breakdown -->
+          <div class="section-label" style="margin-top:2rem;">CPD Type Breakdown</div>
+          <div id="type-breakdown" class="type-breakdown"></div>
+        </div>
+      </div>
+    </section>
 
-                        <div className="input-group" style={{marginTop: '25px'}}>
-                            <label>Specific Learning Outcomes</label>
-                            <textarea rows="4" value={data.outcomes} onChange={e => update('outcomes', e.target.value)}></textarea>
-                        </div>
+    <!-- FORM VIEW -->
+    <section class="view hidden" id="view-form">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title" id="form-view-title">New CPD Entry</h1>
+          <p class="view-subtitle">Complete all required fields to log your professional development activity</p>
+        </div>
+      </div>
 
-                        <div className="input-group" style={{marginTop: '25px'}}>
-                            <label>Impact on Clinical Care</label>
-                            <textarea rows="4" value={data.clinicalImpact} onChange={e => update('clinicalImpact', e.target.value)}></textarea>
-                        </div>
+      <div class="form-layout">
+        <!-- Hidden edit ID -->
+        <input type="hidden" id="edit-id" />
 
-                        <div style={{marginTop: '40px', display: 'flex', justifyContent: 'center'}}>
-                            <button className="btn-modern" onClick={() => setMode('preview')}>
-                                <i className="fa-solid fa-file-export"></i> View PDF Layout
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
+        <!-- Section: Personal & Activity Details -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Activity Details
+          </div>
+          <div class="form-grid">
+            <div class="field-group">
+              <label class="field-label required" for="f-name">Audiologist Name</label>
+              <input class="field-input" type="text" id="f-name" placeholder="e.g. Dr. Sarah Mitchell" required />
+              <span class="field-error" id="err-name"></span>
+            </div>
+            <div class="field-group">
+              <label class="field-label required" for="f-date">Date</label>
+              <input class="field-input" type="date" id="f-date" required />
+              <span class="field-error" id="err-date"></span>
+            </div>
+            <div class="field-group col-span-2">
+              <label class="field-label required" for="f-topic">CPD Topic / Title</label>
+              <input class="field-input" type="text" id="f-topic" placeholder="e.g. Advanced Hearing Aid Fitting Techniques" required />
+              <span class="field-error" id="err-topic"></span>
+            </div>
+            <div class="field-group">
+              <label class="field-label required" for="f-type">CPD Type</label>
+              <select class="field-input field-select" id="f-type" required>
+                <option value="">Select type…</option>
+                <option value="Webinar">🎥 Webinar</option>
+                <option value="Course">📚 Course</option>
+                <option value="Self-study">📖 Self-study</option>
+                <option value="Conference">🎤 Conference</option>
+                <option value="Workshop">🛠 Workshop</option>
+                <option value="Journal Club">🔬 Journal Club</option>
+                <option value="Other">• Other</option>
+              </select>
+              <span class="field-error" id="err-type"></span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="f-provider">Provider / Organisation</label>
+              <input class="field-input" type="text" id="f-provider" placeholder="e.g. British Academy of Audiology" />
+            </div>
+            <div class="field-group">
+              <label class="field-label required" for="f-duration">Duration (hours)</label>
+              <input class="field-input" type="number" id="f-duration" min="0.5" max="100" step="0.5" placeholder="e.g. 2.5" required />
+              <span class="field-error" id="err-duration"></span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="f-link">Link to CPD</label>
+              <input class="field-input" type="url" id="f-link" placeholder="https://…" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="f-tags">Tags (comma-separated)</label>
+              <input class="field-input" type="text" id="f-tags" placeholder="e.g. paediatrics, fitting, BSA" />
+            </div>
+          </div>
+        </div>
 
-            return (
-                <div style={{padding: '40px 0', background: '#f5f7fa', minHeight: '100vh'}}>
-                    <div className="no-print" style={{display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px'}}>
-                        <button className="btn-modern" onClick={() => window.print()}>
-                            <i className="fa-solid fa-print"></i> Print to PDF
-                        </button>
-                        <button className="btn-modern" style={{background: 'white', color: 'var(--primary)', border: '2px solid var(--primary)'}} onClick={() => setMode('edit')}>
-                            <i className="fa-solid fa-pen-to-square"></i> Edit Details
-                        </button>
-                    </div>
+        <!-- Section: Reflection -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Reflection & Learning
+          </div>
+          <div class="form-grid single-col">
+            <div class="field-group">
+              <label class="field-label required" for="f-objectives">Learning Objectives</label>
+              <textarea class="field-input field-textarea" id="f-objectives" rows="3" placeholder="What were the intended learning outcomes of this activity?" required></textarea>
+              <span class="field-error" id="err-objectives"></span>
+            </div>
+            <div class="field-group">
+              <label class="field-label required" for="f-reflection">Notes / Reflection</label>
+              <textarea class="field-input field-textarea" id="f-reflection" rows="4" placeholder="Reflect on what you learned. What went well? What surprised you?" required></textarea>
+              <span class="field-error" id="err-reflection"></span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="f-takeaways">Key Takeaways</label>
+              <textarea class="field-input field-textarea" id="f-takeaways" rows="3" placeholder="List the most important points you will take from this activity…"></textarea>
+            </div>
+            <div class="field-group">
+              <label class="field-label required" for="f-impact">Impact on Practice</label>
+              <textarea class="field-input field-textarea" id="f-impact" rows="3" placeholder="How will this CPD activity change or improve your clinical practice?" required></textarea>
+              <span class="field-error" id="err-impact"></span>
+            </div>
+          </div>
+        </div>
 
-                    <div className="pdf-page">
-                        <div className="report-header-line">
-                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-                                <div>
-                                    <h1 style={{margin: 0, color: 'var(--primary)', fontSize: '2rem'}}>CPD Evidence Log</h1>
-                                    <div style={{marginTop: '5px', fontSize: '1.2rem', fontWeight: 700}}>{data.name || 'Practitioner Name'}</div>
-                                    <div style={{color: 'var(--primary)', fontWeight: 600}}>{data.jobTitle}</div>
-                                </div>
-                                <div style={{textAlign: 'right'}}>
-                                    <div style={{fontSize: '1rem', fontWeight: 700, color: '#64748b'}}>{formatDate(data.date)}</div>
-                                    <div style={{fontSize: '1.2rem', fontWeight: 700, marginTop: '5px'}}>{data.hours ? data.hours + ' Hours' : ''}</div>
-                                </div>
-                             </div>
-                        </div>
+        <!-- Section: Evidence -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Evidence
+          </div>
+          <div class="form-grid">
+            <div class="field-group col-span-2">
+              <label class="field-label" for="f-evidence">Evidence Uploaded (optional)</label>
+              <div class="file-drop-zone" id="file-drop-zone">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>Drop file here or <label for="f-evidence" class="file-link">browse</label></span>
+                <span class="file-hint">Certificate, completion letter, screenshot — any format</span>
+                <input type="file" id="f-evidence" class="file-input-hidden" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+              </div>
+              <div class="file-preview" id="file-preview"></div>
+            </div>
+          </div>
+        </div>
 
-                        <div style={{marginBottom: '20px'}}>
-                            <div className="chip"><i className="fa-solid fa-tags"></i> Domain: {data.category}</div>
-                        </div>
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button class="btn btn-ghost" type="button" onclick="resetForm()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+            Clear Form
+          </button>
+          <div class="form-action-right">
+            <button class="btn btn-secondary" type="button" onclick="saveAndExport()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Save & Export PDF
+            </button>
+            <button class="btn btn-primary" type="button" onclick="saveEntry()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save Entry
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-                        <div className="content-box" style={{borderLeft: '6px solid var(--primary)'}}>
-                            <h3><i className="fa-solid fa-book-open"></i> Activity Overview</h3>
-                            <div style={{fontSize: '1.1rem', fontWeight: 700, marginBottom: '10px', color: '#1a1a2e'}}>{data.activity || 'Untitled Activity'}</div>
-                            <p style={{lineHeight: 1.6, margin: 0, whiteSpace: 'pre-wrap'}}>{data.summary}</p>
-                        </div>
+    <!-- RECORDS VIEW -->
+    <section class="view hidden" id="view-records">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">CPD Records</h1>
+          <p class="view-subtitle">All your logged continuing professional development activities</p>
+        </div>
+        <div class="records-toolbar">
+          <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="search-input" placeholder="Search records…" oninput="filterRecords()" />
+          </div>
+          <select class="filter-select" id="filter-type" onchange="filterRecords()">
+            <option value="">All types</option>
+            <option>Webinar</option>
+            <option>Course</option>
+            <option>Self-study</option>
+            <option>Conference</option>
+            <option>Workshop</option>
+            <option>Journal Club</option>
+            <option>Other</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="exportAllPDF()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export All PDF
+          </button>
+        </div>
+      </div>
 
-                        <div className="content-box">
-                            <h3><i className="fa-solid fa-bullseye"></i> Learning Outcomes</h3>
-                            <p style={{lineHeight: 1.6, margin: 0, whiteSpace: 'pre-wrap'}}>{data.outcomes}</p>
-                        </div>
+      <div id="records-list" class="records-grid"></div>
+      <div id="records-empty" class="empty-state hidden">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <h3>No records found</h3>
+        <p>Try adjusting your filters or <button onclick="showView('form')">add a new entry</button></p>
+      </div>
+    </section>
 
-                        <div className="impact-statement">
-                            <h3 style={{color: 'white', marginTop: 0, marginBottom: '10px'}}><i className="fa-solid fa-heart-pulse"></i> Clinical Impact</h3>
-                            <p style={{fontSize: '1rem', lineHeight: 1.5, margin: 0, whiteSpace: 'pre-wrap'}}>{data.clinicalImpact}</p>
-                        </div>
+  </main>
 
-                        {data.link && (
-                            <div style={{padding: '15px', border: '1px dashed var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                <i className="fa-solid fa-paperclip" style={{color: 'var(--primary)'}}></i>
-                                <span style={{fontWeight: 600}}>Evidence Link:</span>
-                                <a href={data.link} style={{color: '#2563eb', wordBreak: 'break-all'}}>{data.link}</a>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        }
+  <!-- ===== MODAL: View Entry ===== -->
+  <div class="modal-overlay hidden" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="modal-content" id="modal-content"></div>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
