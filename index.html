@@ -32,15 +32,14 @@
             }
         }
 
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
-            margin: 0; 
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
             min-height: 100vh;
             color: var(--text-main);
         }
 
-        /* Form Styling */
         .dashboard {
             max-width: 1000px;
             margin: 40px auto;
@@ -55,19 +54,21 @@
 
         .input-group { display: flex; flex-direction: column; gap: 8px; }
         label { font-weight: 700; font-size: 0.85rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        input, select, textarea { 
-            padding: 12px 16px; 
-            border: 2px solid var(--border); 
-            border-radius: 12px; 
+
+        input, select, textarea {
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
             font-size: 1rem;
+            font-family: inherit;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
-        input:focus, textarea:focus { 
-            border-color: var(--primary); 
-            outline: none; 
-            box-shadow: 0 0 0 4px var(--primary-light); 
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
         .btn-modern {
@@ -77,6 +78,7 @@
             padding: 15px 30px;
             border-radius: 12px;
             font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -86,15 +88,15 @@
 
         .btn-modern:hover { transform: translateY(-2px); background: #351746; }
 
-        /* PDF Styling */
         .pdf-page {
             width: 210mm;
             min-height: 297mm;
             background: white;
             margin: 20px auto;
-            padding: 25mm;
+            padding: 20mm 25mm;
             box-shadow: 0 0 30px rgba(0,0,0,0.15);
             position: relative;
+            box-sizing: border-box;
         }
 
         .report-header {
@@ -126,11 +128,11 @@
             border: 1px solid var(--border);
         }
 
-        .content-box h3 { 
-            margin-top: 0; 
-            color: var(--primary); 
-            display: flex; 
-            align-items: center; 
+        .content-box h3 {
+            margin-top: 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
             gap: 10px;
             font-size: 1.2rem;
         }
@@ -142,6 +144,7 @@
             border-radius: 15px;
             position: relative;
             overflow: hidden;
+            margin-bottom: 25px;
         }
 
         .impact-statement::after {
@@ -162,6 +165,9 @@
     <script type="text/babel">
         const { useState } = React;
 
+        // FIX: stable random ID generated once, not on every render
+        const LOG_ID = 'AUD-' + (Math.floor(Math.random() * 90000) + 10000);
+
         function App() {
             const [mode, setMode] = useState('edit');
             const [data, setData] = useState({
@@ -175,18 +181,24 @@
                 summary: '',
                 outcomes: '',
                 clinicalImpact: '',
-                standards: 'Standard 1: Professionalism',
                 peerFeedback: ''
             });
 
-            const update = (field, val) => setData({...data, [field]: val});
+            const update = (field, val) => setData(prev => ({...prev, [field]: val}));
+
+            const formatDate = (d) => {
+                if (!d) return '';
+                const dt = new Date(d + 'T12:00:00');
+                return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            };
 
             if (mode === 'edit') {
                 return (
                     <div className="dashboard no-print">
                         <div style={{textAlign: 'center', marginBottom: '40px'}}>
-                            <h1 style={{color: 'var(--primary)', margin: 0}}>CPD Pulse</h1>
-                            <p style={{color: var(--text-muted)}}>Professional Development Record for Audiology Specialists</p>
+                            <h1 style={{color: 'var(--primary)', margin: 0, fontSize: '2.2rem'}}>CPD Pulse</h1>
+                            {/* FIX: var() in JSX strings must use style object, not template literals */}
+                            <p style={{color: '#64748b', marginTop: '8px'}}>Professional Development Record for Audiology Specialists</p>
                         </div>
 
                         <div className="form-grid">
@@ -206,6 +218,7 @@
                                 <label><i className="fa-solid fa-clock"></i> Duration (Hours)</label>
                                 <input type="number" value={data.hours} onChange={e => update('hours', e.target.value)} placeholder="e.g. 2.5" />
                             </div>
+                            {/* FIX: gridColumn span must be in style object as a string */}
                             <div className="input-group" style={{gridColumn: 'span 2'}}>
                                 <label><i className="fa-solid fa-graduation-cap"></i> Activity Title</label>
                                 <input type="text" value={data.activity} onChange={e => update('activity', e.target.value)} placeholder="e.g. BSA Tinnitus Management Masterclass" />
@@ -216,8 +229,8 @@
                                     <option>Clinical Excellence</option>
                                     <option>Advanced Technology</option>
                                     <option>Patient Communication</option>
-                                    <option>Leadership & Management</option>
-                                    <option>Research & Audit</option>
+                                    <option>Leadership &amp; Management</option>
+                                    <option>Research &amp; Audit</option>
                                 </select>
                             </div>
                             <div className="input-group">
@@ -251,10 +264,12 @@
             }
 
             return (
-                <div style={{padding: '40px 0'}}>
-                    <div className="no-print" style={{display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '40px'}}>
-                        <button className="btn-modern" onClick={() => window.print()}><i className="fa-solid fa-print"></i> Print to PDF</button>
-                        <button className="btn-modern" style={{background: 'white', color: 'var(--primary)', border: '1px solid var(--primary)'}} onClick={() => setMode('edit')}>
+                <div style={{padding: '40px 0', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', minHeight: '100vh'}}>
+                    <div className="no-print" style={{display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px'}}>
+                        <button className="btn-modern" onClick={() => window.print()}>
+                            <i className="fa-solid fa-print"></i> Print to PDF
+                        </button>
+                        <button className="btn-modern" style={{background: 'white', color: 'var(--primary)', border: '2px solid var(--primary)'}} onClick={() => setMode('edit')}>
                             <i className="fa-solid fa-pen-to-square"></i> Edit Data
                         </button>
                     </div>
@@ -263,31 +278,31 @@
                         <div className="report-header">
                             <div>
                                 <h1 style={{margin: 0, color: 'var(--primary)', fontSize: '2.4rem'}}>CPD Evidence Log</h1>
-                                <p style={{margin: 0, color: 'var(--text-muted)', fontWeight: 600}}>Professional Audiology Portfolio</p>
+                                <p style={{margin: 0, color: '#64748b', fontWeight: 600}}>Professional Audiology Portfolio</p>
                             </div>
                             <div style={{textAlign: 'right'}}>
                                 <div className="chip"><i className="fa-solid fa-check-double"></i> Verified Record</div>
-                                <p style={{margin: '5px 0 0 0', fontSize: '0.9rem', color: 'var(--text-muted)'}}>Date: {data.date}</p>
+                                <p style={{margin: '8px 0 0 0', fontSize: '0.9rem', color: '#64748b'}}>{formatDate(data.date)}</p>
                             </div>
                         </div>
 
                         <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px'}}>
                             <div>
-                                <label style={{color: 'var(--text-muted)'}}>Practitioner</label>
-                                <div style={{fontSize: '1.4rem', fontWeight: 700}}>{data.name}</div>
+                                <div style={{fontSize: '0.8rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px'}}>Practitioner</div>
+                                <div style={{fontSize: '1.4rem', fontWeight: 700}}>{data.name || '—'}</div>
                                 <div style={{color: 'var(--primary)', fontWeight: 600}}>{data.jobTitle}</div>
                             </div>
                             <div style={{textAlign: 'right'}}>
-                                <label style={{color: 'var(--text-muted)'}}>Activity Profile</label>
-                                <div style={{fontSize: '1.2rem', fontWeight: 700}}>{data.hours} Hours</div>
+                                <div style={{fontSize: '0.8rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px'}}>Activity Profile</div>
+                                <div style={{fontSize: '1.2rem', fontWeight: 700}}>{data.hours ? data.hours + ' Hours' : '—'}</div>
                                 <div className="chip" style={{marginTop: '5px'}}>{data.category}</div>
                             </div>
                         </div>
 
                         <div className="content-box" style={{borderLeft: '6px solid var(--primary)'}}>
                             <h3><i className="fa-solid fa-book-open"></i> Activity Overview</h3>
-                            <div style={{fontSize: '1.1rem', fontWeight: 700, marginBottom: '10px'}}>{data.activity}</div>
-                            <p style={{lineHeight: 1.6, margin: 0}}>{data.summary}</p>
+                            <div style={{fontSize: '1.1rem', fontWeight: 700, marginBottom: '10px'}}>{data.activity || '—'}</div>
+                            <p style={{lineHeight: 1.6, margin: 0, whiteSpace: 'pre-wrap'}}>{data.summary}</p>
                         </div>
 
                         <div className="content-box">
@@ -296,21 +311,22 @@
                         </div>
 
                         <div className="impact-statement">
-                            <h3 style={{color: 'white'}}><i className="fa-solid fa-heart-pulse"></i> Patient & Clinical Impact</h3>
-                            <p style={{fontSize: '1.1rem', lineHeight: 1.6, margin: 0}}>{data.clinicalImpact}</p>
+                            <h3 style={{color: 'white', marginTop: 0}}><i className="fa-solid fa-heart-pulse"></i> Patient &amp; Clinical Impact</h3>
+                            <p style={{fontSize: '1.1rem', lineHeight: 1.6, margin: 0, whiteSpace: 'pre-wrap'}}>{data.clinicalImpact}</p>
                         </div>
 
                         {data.link && (
-                            <div style={{marginTop: '25px', padding: '15px', border: '1px dashed var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px'}}>
+                            <div style={{marginBottom: '25px', padding: '15px', border: '1px dashed var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <i className="fa-solid fa-paperclip" style={{color: 'var(--primary)'}}></i>
                                 <span style={{fontWeight: 600}}>Supporting Evidence:</span>
                                 <a href={data.link} style={{color: '#2563eb', wordBreak: 'break-all'}}>{data.link}</a>
                             </div>
                         )}
 
-                        <div style={{marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '40px'}}>
-                            <div style={{fontSize: '0.8rem', color: var(--text-muted)}}>
-                                Log ID: AUD-{Math.floor(Math.random()*90000) + 10000}<br/>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '30px', borderTop: '1px solid var(--border)'}}>
+                            {/* FIX: var() inside JSX string literals doesn't work — use hex colour directly */}
+                            <div style={{fontSize: '0.8rem', color: '#64748b'}}>
+                                Log ID: {LOG_ID}<br/>
                                 Electronically Generated CPD Record
                             </div>
                             <div style={{textAlign: 'center', width: '200px'}}>
