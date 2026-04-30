@@ -571,8 +571,15 @@ function exportSinglePDF(entry) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...TEAL);
-    doc.text(`🔗 ${entry.link}`, MARGIN, y, { maxWidth: WIDTH });
-    y += 7;
+    const linkLabel = 'Link: ';
+    const labelW = doc.getTextWidth(linkLabel);
+    const linkLines = doc.splitTextToSize(entry.link, WIDTH - labelW);
+    doc.text(linkLabel, MARGIN, y);
+    linkLines.forEach((line, li) => {
+      doc.text(line, MARGIN + labelW, y + li * 5);
+    });
+    try { doc.link(MARGIN, y - 4, WIDTH, linkLines.length * 5 + 2, { url: entry.link }); } catch(e) {}
+    y += linkLines.length * 5 + 3;
   }
 
   if (entry.tags && entry.tags.length) {
@@ -810,6 +817,21 @@ function exportAllPDF() {
       doc.setTextColor(...GRAY);
       doc.text([entry.name, entry.provider].filter(Boolean).join(' · '), MARGIN, ey);
       ey += 8;
+    }
+
+    if (entry.link) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...TEAL);
+      const linkLabel = 'Link: ';
+      const labelW = doc.getTextWidth(linkLabel);
+      const linkLines = doc.splitTextToSize(entry.link, WIDTH - labelW);
+      doc.text(linkLabel, MARGIN, ey);
+      linkLines.forEach((line, li) => {
+        doc.text(line, MARGIN + labelW, ey + li * 4.5);
+      });
+      try { doc.link(MARGIN, ey - 3, WIDTH, linkLines.length * 4.5 + 2, { url: entry.link }); } catch(e) {}
+      ey += linkLines.length * 4.5 + 4;
     }
 
     doc.setDrawColor(...TEAL);
